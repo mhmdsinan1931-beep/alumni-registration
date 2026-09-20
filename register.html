@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cultural Programme Registration</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="header">
+  <div class="header-icon">🎭</div>
+  <div>
+    <h1>Cultural Programme Registration</h1>
+    <p>Register your participation below</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     STEP 1 — NAME
+══════════════════════════════════════ -->
+<div class="card" id="step-name">
+  <div class="section-title">👤 Your Name</div>
+  <div class="form-group">
+    <label for="participant-name">Full Name</label>
+    <input type="text" id="participant-name" placeholder="Enter your full name…" autofocus>
+  </div>
+  <button class="btn btn-primary" id="name-next">Next →</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     STEP 2 — PROGRAMME SELECTION
+══════════════════════════════════════ -->
+<div class="card" id="step-prog" style="display:none">
+  <div class="section-title">🎪 Select Programmes</div>
+  <p style="color:var(--text-muted);margin-bottom:16px;font-size:0.9rem">You can select multiple programmes.</p>
+  <div id="prog-grid" class="prog-grid"></div>
+
+  <!-- Dynamic detail fields -->
+  <div id="detail-fields" class="detail-fields"></div>
+
+  <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+    <button class="btn btn-outline" onclick="showStep(document.getElementById('step-name'))">← Back</button>
+    <button class="btn btn-primary" id="register-btn" disabled>✅ Register</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     STEP 3 — SUCCESS
+══════════════════════════════════════ -->
+<div class="card" id="step-success" style="display:none">
+  <div class="success-box">
+    <div class="check">🎉</div>
+    <h2>Registered Successfully!</h2>
+    <p>Thank you, <strong id="success-name"></strong>!<br>Your registration has been saved.</p>
+    <div style="margin-bottom:20px" id="success-progs"></div>
+    <button class="btn btn-outline" id="edit-btn">✏️ Edit my Registration</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ── Firebase SDKs ── -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- Your Firebase config -->
+<script src="js/firebase-config.js"></script>
+<!-- Registration logic -->
+<script src="js/register.js"></script>
+
+</body>
+</html>

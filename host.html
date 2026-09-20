@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Host Portal — Cultural Programme</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     PASSWORD OVERLAY
+══════════════════════════════════════ -->
+<div id="password-overlay">
+  <div class="password-box">
+    <div class="lock-icon">🔐</div>
+    <h2>Host Portal</h2>
+    <p>Enter password to access the dashboard</p>
+    <input type="password" id="pw-input" placeholder="••••••••" autofocus>
+    <div id="pw-error"></div>
+    <button class="btn btn-primary" id="login-btn" style="width:100%">Login</button>
+  </div>
+</div>
+
+<!-- ── Header ── -->
+<div class="header">
+  <div class="header-icon">🏛️</div>
+  <div>
+    <h1>Host Portal</h1>
+    <p>Cultural Programme Registration Dashboard</p>
+  </div>
+</div>
+
+<!-- ── Action Bar ── -->
+<div class="host-bar">
+  <div>
+    <span class="section-title" style="border:none;margin:0;padding:0">📊 Participants
+      <span id="count-badge" style="font-size:0.85rem;font-weight:500;background:var(--primary-light);color:var(--primary-dark);padding:3px 12px;border-radius:99px;margin-left:8px">0</span>
+    </span>
+  </div>
+  <div class="host-actions">
+    <button class="btn btn-accent" id="download-btn">📥 Download Excel</button>
+    <button class="btn btn-outline" id="change-pw-btn">🔑 Change Password</button>
+  </div>
+</div>
+
+<!-- ── Spreadsheet Table ── -->
+<div class="main-wrap" style="margin-top:16px">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Programmes</th>
+          <th>Topic / First Line of Song</th>
+          <th>Registered At</th>
+        </tr>
+      </thead>
+      <tbody id="participants-tbody">
+        <tr><td colspan="5">
+          <div class="empty-state">
+            <div class="icon">⏳</div>
+            <p>Connecting to Firebase…</p>
+          </div>
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── Registration Link (bottom) ── -->
+<div class="reg-link-box">
+  <div class="reg-link-inner">
+    <div>
+      <p>📎 Share this registration link with participants</p>
+      <div class="reg-link-url" id="reg-link-url">loading…</div>
+    </div>
+    <button class="btn btn-accent" id="copy-link-btn">📋 Copy Link</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHANGE PASSWORD MODAL
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="change-pw-modal" style="display:none">
+  <div class="modal-box">
+    <h3>🔑 Change Host Password</h3>
+    <div class="form-group">
+      <label>New Password</label>
+      <input type="password" id="new-pw-input" placeholder="Enter new password…">
+    </div>
+    <div class="form-group">
+      <label>Confirm Password</label>
+      <input type="password" id="confirm-pw-input" placeholder="Re-enter new password…">
+    </div>
+    <div id="change-pw-error" style="color:var(--danger);font-size:0.85rem;margin-bottom:12px;min-height:18px"></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" id="save-pw-btn">✅ Save</button>
+      <button class="btn btn-outline" id="cancel-pw-btn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ── Firebase SDKs ── -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- SheetJS for Excel export -->
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<!-- Your Firebase config -->
+<script src="js/firebase-config.js"></script>
+<!-- Host portal logic -->
+<script src="js/host.js"></script>
+
+</body>
+</html>
