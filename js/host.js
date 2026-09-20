@@ -57,7 +57,7 @@ function renderTable() {
   count.textContent = participants.length + " participant" + (participants.length !== 1 ? "s" : "");
 
   if (participants.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5">
+    tbody.innerHTML = `<tr><td colspan="6">
       <div class="empty-state">
         <div class="icon">📋</div>
         <p>No registrations yet.<br>Share the link below to get started!</p>
@@ -69,7 +69,6 @@ function renderTable() {
   tbody.innerHTML = participants.map((p, i) => {
     const progs  = (p.programmes || []).map(pr => `<span class="badge">${pr.label}</span>`).join(" ");
     const details = (p.programmes || []).map(pr => {
-      const label = pr.type === "song" ? "🎵 First line" : "📌 Topic";
       return `<div style="font-size:0.85rem;margin-bottom:2px"><span style="color:#6b7280">${pr.label}:</span> ${pr.detail || "—"}</div>`;
     }).join("");
     const time = p.registeredAt
@@ -84,8 +83,26 @@ function renderTable() {
         <td>${progs}</td>
         <td>${details}</td>
         <td style="white-space:nowrap;font-size:0.82rem;color:#6b7280">${time}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="deleteParticipant('${p.id}', '${escHtml(p.name).replace(/'/g,"\\'")}')">
+            🗑️ Delete
+          </button>
+        </td>
       </tr>`;
   }).join("");
+}
+
+// ── Delete participant ──
+async function deleteParticipant(docId, name) {
+  const confirmed = window.confirm(`Delete registration for "${name}"?\nThis cannot be undone.`);
+  if (!confirmed) return;
+  try {
+    await db.collection("registrations").doc(docId).delete();
+    showToast(`🗑️ "${name}" deleted.`);
+  } catch (err) {
+    console.error(err);
+    showToast("❌ Failed to delete. Try again.");
+  }
 }
 
 // ── Download Excel ──

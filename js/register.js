@@ -3,12 +3,10 @@
 // =====================================================
 
 const PROGRAMMES = [
-  { id: "malayalam_speech",      label: "Malayalam Speech",     emoji: "🎤", type: "topic" },
-  { id: "madh_song",             label: "Madh Song",            emoji: "🎵", type: "song"  },
-  { id: "mappilappattu",         label: "Mappilappattu",        emoji: "🎶", type: "song"  },
-  { id: "group_song",            label: "Group Song",           emoji: "🎸", type: "song"  },
-  { id: "kathaprasangam",        label: "Kathaprasangam",       emoji: "📖", type: "topic" },
-  { id: "malayalam_conversation",label: "Malayalam Conversation",emoji: "💬", type: "topic" },
+  { id: "malayalam_speech", label: "Malayalam Speech", emoji: "🎤", type: "topic" },
+  { id: "madh_song",        label: "Madh Song",        emoji: "🎵", type: "song"  },
+  { id: "mappilappattu",    label: "Mappilappattu",    emoji: "🎶", type: "song"  },
+  { id: "group_song",       label: "Group Song",       emoji: "🎸", type: "song"  },
 ];
 
 // ── DOM refs ──
