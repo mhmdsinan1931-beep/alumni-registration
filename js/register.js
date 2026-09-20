@@ -3,11 +3,11 @@
 // =====================================================
 
 const PROGRAMMES = [
-  { id: "malayalam_speech",     label: "Malayalam Speech",    emoji: "🎤", type: "topic" },
-  { id: "madh_song",            label: "Madh Song",           emoji: "🎵", type: "song"  },
-  { id: "mappilappattu",        label: "Mappilappattu",       emoji: "🎶", type: "song"  },
-  { id: "group_song",           label: "Group Song",          emoji: "🎸", type: "song"  },
-  { id: "kathaprasangam",       label: "Kathaprasangam",      emoji: "📖", type: "topic" },
+  { id: "malayalam_speech",      label: "Malayalam Speech",     emoji: "🎤", type: "topic" },
+  { id: "madh_song",             label: "Madh Song",            emoji: "🎵", type: "song"  },
+  { id: "mappilappattu",         label: "Mappilappattu",        emoji: "🎶", type: "song"  },
+  { id: "group_song",            label: "Group Song",           emoji: "🎸", type: "song"  },
+  { id: "kathaprasangam",        label: "Kathaprasangam",       emoji: "📖", type: "topic" },
   { id: "malayalam_conversation",label: "Malayalam Conversation",emoji: "💬", type: "topic" },
 ];
 
@@ -24,7 +24,7 @@ const editBtn     = document.getElementById("edit-btn");
 const successName = document.getElementById("success-name");
 const successProgs= document.getElementById("success-progs");
 
-let currentDocId = null;  // Firestore doc ID for editing
+let currentDocId = null;
 
 // ── Build programme checkboxes ──
 PROGRAMMES.forEach(p => {
@@ -49,12 +49,15 @@ nameNext.addEventListener("click", () => {
   showStep(stepProg);
 });
 
+nameInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") nameNext.click();
+});
+
 // ── Update dynamic detail fields ──
 function updateDetailFields() {
   detailFields.innerHTML = "";
   const checked = [...document.querySelectorAll("#prog-grid input:checked")];
 
-  // Update prog-item styling
   document.querySelectorAll(".prog-item").forEach(el => {
     el.classList.toggle("checked", el.querySelector("input").checked);
   });
@@ -64,14 +67,24 @@ function updateDetailFields() {
     if (!prog) return;
     const div = document.createElement("div");
     div.className = "detail-field";
+    const promptText = prog.type === "song" ? "First line of the song" : "Topic";
+    const placeholder = prog.type === "song" ? "Enter first line of the song…" : "Enter topic…";
     div.innerHTML = `
-      <label>${prog.emoji} <strong>${prog.label}</strong> — ${prog.type === "song" ? "First line of the song" : "Topic"}</label>
-      <input type="text" id="detail_${prog.id}" placeholder="${prog.type === "song" ? "Enter first line of the song…" : "Enter topic…"}">
+      <label>${prog.emoji} <strong>${prog.label}</strong> — ${promptText}</label>
+      <input type="text" id="detail_${prog.id}" placeholder="${placeholder}" autocomplete="off">
     `;
     detailFields.appendChild(div);
   });
 
   registerBtn.disabled = checked.length === 0;
+}
+
+// ── Helper: save with timeout ──
+function saveWithTimeout(promise, ms = 10000) {
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("TIMEOUT")), ms)
+  );
+  return Promise.race([promise, timeout]);
 }
 
 // ── Register ──
@@ -89,29 +102,39 @@ registerBtn.addEventListener("click", async () => {
     const prog = PROGRAMMES.find(p => p.id === input.value);
     const detailInput = document.getElementById("detail_" + prog.id);
     const detail = detailInput ? detailInput.value.trim() : "";
-    if (!detail) { detailInput.style.borderColor = "red"; valid = false; }
-    else { if (detailInput) detailInput.style.borderColor = ""; }
+    if (!detail) {
+      if (detailInput) detailInput.style.borderColor = "red";
+      valid = false;
+    } else {
+      if (detailInput) detailInput.style.borderColor = "";
+    }
     programmes.push({ id: prog.id, label: prog.label, type: prog.type, detail });
   });
-  if (!valid) { showToast("Please fill all required fields."); return; }
+
+  if (!valid) { showToast("Please fill in all required fields."); return; }
 
   registerBtn.disabled = true;
   registerBtn.innerHTML = "⏳ Saving…";
 
   try {
+    const now = new Date().toISOString(); // client-side timestamp as reliable fallback
+
     const data = {
       name,
       programmes,
-      registeredAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      registeredAt: now,
+      updatedAt: now,
     };
 
     if (currentDocId) {
-      // Editing existing record
-      await db.collection("registrations").doc(currentDocId).update(data);
-      showToast("Registration updated!");
+      await saveWithTimeout(
+        db.collection("registrations").doc(currentDocId).update(data)
+      );
+      showToast("✅ Registration updated!");
     } else {
-      const docRef = await db.collection("registrations").add(data);
+      const docRef = await saveWithTimeout(
+        db.collection("registrations").add(data)
+      );
       currentDocId = docRef.id;
     }
 
@@ -121,11 +144,19 @@ registerBtn.addEventListener("click", async () => {
       `<span class="badge">${p.label}</span>`
     ).join(" ");
     showStep(stepSuccess);
+
   } catch (err) {
-    console.error(err);
-    showToast("Error saving. Check Firebase config.");
+    console.error("Registration error:", err);
     registerBtn.disabled = false;
     registerBtn.innerHTML = "✅ Register";
+
+    if (err.message === "TIMEOUT") {
+      showToast("⚠️ Connection timed out. Check your internet or Firestore rules.", 4000);
+    } else if (err.code === "permission-denied") {
+      showToast("🔒 Firestore permission denied. Set rules to test mode.", 4000);
+    } else {
+      showToast("❌ Error: " + (err.message || "Unknown error"), 4000);
+    }
   }
 });
 

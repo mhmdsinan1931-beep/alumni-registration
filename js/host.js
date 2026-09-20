@@ -72,7 +72,11 @@ function renderTable() {
       const label = pr.type === "song" ? "🎵 First line" : "📌 Topic";
       return `<div style="font-size:0.85rem;margin-bottom:2px"><span style="color:#6b7280">${pr.label}:</span> ${pr.detail || "—"}</div>`;
     }).join("");
-    const time = p.registeredAt ? new Date(p.registeredAt.seconds * 1000).toLocaleString("en-IN") : "—";
+    const time = p.registeredAt
+      ? (typeof p.registeredAt === "string"
+          ? new Date(p.registeredAt).toLocaleString("en-IN")
+          : new Date(p.registeredAt.seconds * 1000).toLocaleString("en-IN"))
+      : "—";
     return `
       <tr>
         <td class="serial">${i + 1}</td>
@@ -91,17 +95,22 @@ document.getElementById("download-btn").addEventListener("click", () => {
   // Flatten rows for Excel
   const rows = [["#", "Name", "Programme", "Detail (Topic / First Line)", "Registered At"]];
   participants.forEach((p, i) => {
+    const time = p.registeredAt
+      ? (typeof p.registeredAt === "string"
+          ? new Date(p.registeredAt).toLocaleString("en-IN")
+          : new Date(p.registeredAt.seconds * 1000).toLocaleString("en-IN"))
+      : "";
     (p.programmes || []).forEach((pr, j) => {
       rows.push([
         j === 0 ? i + 1 : "",
         j === 0 ? p.name : "",
         pr.label,
         pr.detail || "",
-        j === 0 && p.registeredAt ? new Date(p.registeredAt.seconds * 1000).toLocaleString("en-IN") : ""
+        j === 0 ? time : ""
       ]);
     });
     if (!p.programmes || p.programmes.length === 0) {
-      rows.push([i + 1, p.name, "", "", p.registeredAt ? new Date(p.registeredAt.seconds * 1000).toLocaleString("en-IN") : ""]);
+      rows.push([i + 1, p.name, "", "", time]);
     }
   });
 

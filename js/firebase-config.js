@@ -1,18 +1,17 @@
 // =====================================================
-//  FIREBASE CONFIGURATION
-//  Replace the values below with your Firebase project
-//  settings from: Firebase Console → Project Settings → Your apps
+//  FIREBASE CONFIGURATION — alumni-registration-2971f
 // =====================================================
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCxNgfuWZfZT0zXNxMfruxT2o3EtAMCckg",
+  authDomain: "alumni-registration-2971f.firebaseapp.com",
+  projectId: "alumni-registration-2971f",
+  storageBucket: "alumni-registration-2971f.firebasestorage.app",
+  messagingSenderId: "103367097986",
+  appId: "1:103367097986:web:5589a8afb09a1104ee3e9b",
+  measurementId: "G-RWTX0FY39Y"
 };
 
-// Initialize Firebase
+// Initialize Firebase (compat SDK)
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
