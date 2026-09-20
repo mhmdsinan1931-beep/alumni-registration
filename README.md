@@ -1,6 +1,6 @@
-# Cultural Programme Registration Portal
+# Meelad Programme Registration Portal
 
-A Firebase-backed, two-portal web app for managing cultural programme registrations.
+A Firebase-backed, two-portal web app for managing Meelad Programme registrations.
 
 ## 🗂 Folder Structure
 
